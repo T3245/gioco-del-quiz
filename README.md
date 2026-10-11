@@ -2,149 +2,95 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quiz Cinema & Musica 🎬🎶</title>
+  <title>Quiz Cinema e Musica</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: sans-serif;
       background-color: #1a1a2e;
       color: #ffffff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
+      text-align: center;
+      padding: 40px;
     }
-    .quiz-card {
+    .card {
       background-color: #16213e;
       border: 2px solid #e94560;
-      border-radius: 12px;
-      padding: 25px;
-      max-width: 500px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 400px;
+      margin: 0 auto;
     }
-    h1 {
-      color: #e94560;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-    .question {
-      font-size: 18px;
-      margin-bottom: 20px;
-    }
-    .btn {
+    button {
       background-color: #0f3460;
       color: white;
       border: 1px solid #e94560;
-      padding: 12px 15px;
-      margin: 8px 0;
+      padding: 10px;
+      margin: 5px 0;
       width: 100%;
-      border-radius: 6px;
+      border-radius: 5px;
       font-size: 16px;
       cursor: pointer;
-      text-align: left;
     }
-    .btn:hover {
-      background-color: #e94560;
-    }
-    .result {
-      font-size: 20px;
-      font-weight: bold;
-      color: #4eef90;
-      margin-top: 20px;
-    }
-    .restart-btn {
-      background-color: #e94560;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 15px;
-    }
+    button:hover { background-color: #e94560; }
   </style>
 </head>
 <body>
 
-  <div class="quiz-card">
+  <div class="card">
     <h1>🎬 Quiz Cinema & Musica 🎶</h1>
-    <div id="quiz-box">
-      <div id="question" class="question">Caricamento...</div>
-      <div id="answers"></div>
-    </div>
-    <div id="result" class="result"></div>
+    <h3 id="domanda">Caricamento...</h3>
+    <div id="opzioni"></div>
+    <p id="risultato" style="font-weight: bold; color: #4eef90;"></p>
   </div>
 
   <script>
-    const questions = [
+    const domande = [
       {
-        q: "1. Nel film 'Il Re Leone', come si chiama il fideno bucero consigliere del re?",
-        options: ["A) Zazu", "B) Iago", "C) Rafiki"],
-        correct: 0
+        q: "1. Nel Re Leone, come si chiama il consigliere del re?",
+        opzioni: ["A) Zazu", "B) Iago", "C) Rafiki"],
+        esatta: 0
       },
       {
-        q: "2. Chi è conosciuto in tutto il mondo come il 'Re del Pop'?",
-        options: ["A) Elvis Presley", "B) Michael Jackson", "C) Prince"],
-        correct: 1
+        q: "2. Chi è conosciuto come il 'Re del Pop'?",
+        opzioni: ["A) Elvis Presley", "B) Michael Jackson", "C) Prince"],
+        esatta: 1
       },
       {
-        q: "3. Chi interpreta Rose nel celebre film 'Titanic' (1997)?",
-        options: ["A) Kate Winslet", "B) Julia Roberts", "C) Nicole Kidman"],
-        correct: 0
+        q: "3. Chi interpreta Rose in 'Titanic' (1997)?",
+        opzioni: ["A) Kate Winslet", "B) Julia Roberts", "C) Nicole Kidman"],
+        esatta: 0
       }
     ];
 
-    let current = 0;
-    let score = 0;
+    let indice = 0;
+    let punti = 0;
 
-    function loadQuestion() {
-      const q = questions[current];
-      document.getElementById("question").innerText = q.q;
-      const answersDiv = document.getElementById("answers");
-      answersDiv.innerHTML = "";
+    function mostraDomanda() {
+      const d = domande[indice];
+      document.getElementById("domanda").innerText = d.q;
+      const box = document.getElementById("opzioni");
+      box.innerHTML = "";
 
-      q.options.forEach((opt, index) => {
+      d.opzioni.forEach((opt, i) => {
         const btn = document.createElement("button");
-        btn.className = "btn";
         btn.innerText = opt;
-        btn.onclick = () => checkAnswer(index);
-        answersDiv.appendChild(btn);
+        btn.onclick = () => rispondi(i);
+        box.appendChild(btn);
       });
     }
 
-    function checkAnswer(index) {
-      if (index === questions[current].correct) {
-        score++;
-      }
-      current++;
-      if (current < questions.length) {
-        loadQuestion();
+    function rispondi(i) {
+      if (i === domande[indice].esatta) punti++;
+      indice++;
+      if (indice < domande.length) {
+        mostraDomanda();
       } else {
-        showResult();
+        document.getElementById("domanda").innerText = "Quiz Completato!";
+        document.getElementById("opzioni").innerHTML = "";
+        document.getElementById("risultato").innerText = "Punteggio: " + punti + " su " + domande.length + "! 🎉";
       }
     }
 
-    function showResult() {
-      document.getElementById("quiz-box").style.display = "none";
-      document.getElementById("result").innerHTML = 
-        `Hai completato il quiz!<br><br>Punteggio: <strong>${score} su ${questions.length}</strong><br><br>` +
-        `<button class="restart-btn" onclick="restart()">Rigioca 🔄</button>`;
-    }
-
-    function restart() {
-      current = 0;
-      score = 0;
-      document.getElementById("quiz-box").style.display = "block";
-      document.getElementById("result").innerHTML = "";
-      loadQuestion();
-    }
-
-    loadQuestion();
+    mostraDomanda();
   </script>
-
 </body>
 </html>
